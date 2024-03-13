@@ -1,6 +1,8 @@
 import { OrganizationProfile, OrganizationSwitcher } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
+import { UserButton } from "@clerk/nextjs";
+
 export default function slug() {
   const { isSignedIn, user } = useUser();
   const [showMembers, setShowMembers] = useState(false);
@@ -14,15 +16,22 @@ export default function slug() {
         <h1>You are signed in as an admin</h1>
         <button onClick={handleViewMembersClick}>View Members</button>
         {showMembers && <OrganizationProfile />}
-        <OrganizationSwitcher />
+        <OrganizationSwitcher
+          afterSelectOrganizationUrl={(org) => `/organization/${org.slug}`}
+        />
+        <UserButton />
         <h2>Display scopes here</h2>
       </div>
     );
   } else {
     return (
-      <div>
-        <h1>You are signed in as a member</h1>
-        <OrganizationSwitcher />
+      <div className="ml-56">
+        <h1 className="ml-56">You are signed in as a member</h1>
+        <OrganizationSwitcher
+          afterSelectOrganizationUrl={(org) => `/organization/${org.slug}`}
+        />
+        <UserButton />
+
         <h2>Display scopes here</h2>
       </div>
     );
