@@ -1,14 +1,14 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import { UserButton } from "@clerk/nextjs";
-import CreateOrganizationPage from "./create-organization";
-
+import Dashboard from "@/components/Dashboard";
+import Router from "next/router";
 export default function Home() {
+  function click() {
+    Router.replace("/organization");
+  }
   return (
     <div>
-      <h1>hi</h1>
-      {/* <CreateOrganizationPage /> */}
-      {/* <UserButton /> */}
+      <h1>Welcome To env scopes</h1>
+      <Dashboard />
+      <button onClick={click}>Create an organization</button>
     </div>
   );
 }
