@@ -1,10 +1,10 @@
 import { OrganizationProfile, OrganizationSwitcher } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserButton } from "@clerk/nextjs";
 import CustomTable from "@/components/CustomTable";
 import { Typography } from "@mui/material";
-
+import axios from 'axios';
 export default function slug() {
 
   const rows = [
@@ -21,12 +21,13 @@ export default function slug() {
   ]
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'id', headerName: 'ID', width: 100 },
     { field: 'projectName', headerName: 'Project Name', width: 200 }
   ];
   const { isSignedIn, user } = useUser();
 
   const [showMembers, setShowMembers] = useState(false);
+  const [repoData, setRepoData] = useState(false);
 
   const handleSelectionModelChange = (newSelectionModel) => {
   
@@ -39,7 +40,21 @@ export default function slug() {
   //TODO MOVE MEMBERS TO MENU BAR
 
   const CreateSection = (userType) => {
+    useEffect(()=>{
     
+      const getdt = async ()=>{
+        const gitlabData = await axios('/api/hello')
+       
+        const repoFormatted = gitlabData.data.map(x=>{
+          return {id: x.id, projectName: x.name}
+        })
+        console.log(repoFormatted)
+        setRepoData(repoFormatted)
+      }
+      getdt()
+      
+    },[])
+
     return (
       <div>
         <h1>You are signed in as an {userType}</h1>
@@ -49,7 +64,7 @@ export default function slug() {
            {/*  <button onClick={handleViewMembersClick}>View Members</button> */}
          
           <Typography variant="h3">Repositories</Typography>
-          <CustomTable rows={rows} columns = {columns} clickRowHandler={handleSelectionModelChange} />
+          <CustomTable rows={repoData} columns = {columns} clickRowHandler={handleSelectionModelChange} />
           </>
         )}
 
