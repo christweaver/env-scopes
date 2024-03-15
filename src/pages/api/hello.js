@@ -8,10 +8,10 @@ export default async function handler(req, res) {
   const { userId } = getAuth(req);
 
   const provider = "oauth_gitlab";
-  const clerkResponse = await clerkClient.users.getUserOauthAccessToken(
+  /* const clerkResponse = await clerkClient.users.getUserOauthAccessToken(
     userId,
     provider
-  );
-  console.log({clerkResponse})
+  ); */
+  //console.log({clerkResponse})
   res.status(200).json({ name: "John Doe" });
 }
