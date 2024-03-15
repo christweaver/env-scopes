@@ -5,6 +5,7 @@ import { UserButton } from "@clerk/nextjs";
 
 export default function slug() {
   const { isSignedIn, user } = useUser();
+  console.log(user)
   const [showMembers, setShowMembers] = useState(false);
 
   const handleViewMembersClick = () => {
