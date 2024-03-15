@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
 import Modal from "@mui/material/Modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const style = {
   position: "absolute",
@@ -21,7 +21,7 @@ const style = {
 };
 
 function BasicModal({setOpen, open}) {
-  
+
  
   const handleClose = () => setOpen(false);
 
