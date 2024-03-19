@@ -9,17 +9,23 @@ const GITLAB_PROVIDER = "oauth_gitlab";
 export default async function handler(req, res) {
   try {
     const { userId } = getAuth(req);
-    console.log(userId)
+    console.log(userId);
 
     if (!userId) {
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
     const user = await clerkClient.users.getUser(userId);
-    
-    if(user){
+
+    // Validate request body
+    if (!name || !email) {
+      return res.status(400).json({ error: "Name and email are required" });
+    }
+
+    if (user) {
       //This gives us the info about what Oauth accounts they have set up (gitlab, github, etc)
-      const externalAccounts = user.externalAccounts && user.externalAccounts.map(a=> a.provider);
+      const externalAccounts =
+        user.externalAccounts && user.externalAccounts.map((a) => a.provider);
     }
 
     const [clerkResponse] = await clerkClient.users.getUserOauthAccessToken(
