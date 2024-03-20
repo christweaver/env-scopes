@@ -6,6 +6,7 @@ import CustomTable from "@/components/CustomTable";
 import { Button, Typography } from "@mui/material";
 import axios from "axios";
 import repo from "./[repo]";
+import { useRouter } from "next/navigation";
 export default function slug() {
   const rows = [
     { id: 1, projectName: "AuthSystem" },
@@ -28,7 +29,6 @@ export default function slug() {
 
   const [showMembers, setShowMembers] = useState(false);
   const [repoData, setRepoData] = useState(false);
-  console.log(repoData);
   const handleSelectionModelChange = (newSelectionModel) => {
     location.href += `/${newSelectionModel.id}`;
   };
@@ -48,6 +48,10 @@ export default function slug() {
       getdt();
     }, []);
 
+    let router = useRouter();
+    function change() {
+      // location.href += "/post";
+    }
     return (
       <div>
         <h1>You are signed in as an {userType}</h1>
@@ -56,6 +60,7 @@ export default function slug() {
             {/*  <button onClick={handleViewMembersClick}>View Members</button> */}
 
             <Typography variant="h3">Repositories</Typography>
+            <Button onClick={change}>Add new Repo</Button>
             <CustomTable
               rows={repoData}
               columns={columns}

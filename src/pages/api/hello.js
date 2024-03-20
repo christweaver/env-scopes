@@ -17,11 +17,6 @@ export default async function handler(req, res) {
     }
     const user = await clerkClient.users.getUser(userId);
 
-    // Validate request body
-    if (!name || !email) {
-      return res.status(400).json({ error: "Name and email are required" });
-    }
-
     if (user) {
       //This gives us the info about what Oauth accounts they have set up (gitlab, github, etc)
       const externalAccounts =
