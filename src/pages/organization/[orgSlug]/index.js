@@ -1,12 +1,9 @@
-import { OrganizationProfile, OrganizationSwitcher } from "@clerk/nextjs";
+import { useRouter } from 'next/router';
 import { useUser } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
-import { UserButton } from "@clerk/nextjs";
+import { useState, useEffect} from "react";
 import CustomTable from "@/components/CustomTable";
-import { Button, Typography } from "@mui/material";
+import { Typography, Button, } from "@mui/material";
 import axios from "axios";
-import repo from "./[repo]";
-import { useRouter } from "next/navigation";
 export default function slug() {
   const rows = [
     { id: 1, projectName: "AuthSystem" },
@@ -29,38 +26,53 @@ export default function slug() {
 
   const [showMembers, setShowMembers] = useState(false);
   const [repoData, setRepoData] = useState(false);
+
   const handleSelectionModelChange = (newSelectionModel) => {
     location.href += `/${newSelectionModel.id}`;
   };
 
   //TODO MOVE MEMBERS TO MENU BAR
 
-  const CreateSection = (userType) => {
+  const CreateSection = (user) => {
+
+   
+  const userType = user && user.organizationMemberships[0].role
+
+  const userId = user && user.id
+  console.log(userId)
+    const router = useRouter();
     useEffect(() => {
       const getdt = async () => {
-        const gitlabData = await axios("/api/hello");
+        //TODO FILTER BY ORGANIZATION
+        const gitlabData = await axios(`/api/project?userId=${userId}`);
+
         const repoFormatted = gitlabData.data.map((x) => {
-          return { id: x.id, projectName: x.name };
+          return { id: x.id, projectName: x.projectName };
         });
         console.log(repoFormatted);
         setRepoData(repoFormatted);
       };
-      getdt();
-    }, []);
+      user&& getdt();
+    }, [user]);
 
-    let router = useRouter();
-    function change() {
-      // location.href += "/post";
+
+    const handleButtonClick = () => {
+     
+      router.push(`${router.asPath}/import`);
+    };
+
+    if (!isSignedIn || !user) {
+      return <div>Loading...</div>; // or any other loading state
     }
+    
     return (
       <div>
-        <h1>You are signed in as an {userType}</h1>
+       
         {userType === "org:admin" && (
           <>
             {/*  <button onClick={handleViewMembersClick}>View Members</button> */}
 
             <Typography variant="h3">Repositories</Typography>
-            <Button onClick={change}>Add new Repo</Button>
             <CustomTable
               rows={repoData}
               columns={columns}
@@ -68,38 +80,14 @@ export default function slug() {
             />
           </>
         )}
-        {/* <Button onClick={addRepo}>Add Repo to DB</Button> */}
+        
+          <Button variant="contained" onClick={handleButtonClick}>
+            Import Projects
+          </Button>
+        
       </div>
     );
   };
 
-  return CreateSection(isSignedIn && user.organizationMemberships[0].role);
-
-  /* if (isSignedIn && user.organizationMemberships[0].role === "org:admin") {
-    return (
-      <div>
-        <h1>You are signed in as an admin</h1>
-        <button onClick={handleViewMembersClick}>View Members</button>
-        {showMembers && <OrganizationProfile />}
-        <OrganizationSwitcher
-          afterSelectOrganizationUrl={(org) => `/organization/${org.slug}`}
-          hidePersonal="true"
-        />
-        <UserButton />
-        <h2>Display scopes here</h2>
-      </div>
-    );
-  } else {
-    return (
-      <div className="ml-56">
-        <h1 className="ml-56">You are signed in as a member</h1>
-        <OrganizationSwitcher
-          afterSelectOrganizationUrl={(org) => `/organization/${org.slug}`}
-          hidePersonal="true"
-        />
-
-        <h2>Display scopes here</h2>
-      </div>
-    );
-  } */
+  return CreateSection(isSignedIn && user);
 }

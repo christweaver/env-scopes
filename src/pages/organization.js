@@ -15,7 +15,7 @@ export default function organization() {
       },
       body: JSON.stringify({ organizationName, organizationURL }),
     });
-    router.replace(`organization/${organizationURL}`);
+   // router.replace(`organization/${organizationURL}`);
   };
 
   return (

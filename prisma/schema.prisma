@@ -14,21 +14,23 @@ datasource db {
 }
 
 model Organization {
-  id Int @id @default(autoincrement())
+  id               String    @id @default(uuid())
   organizationName String
-  organizationURL String
-projects Project[]
+  organizationURL  String
+  projects         Project[]
+ 
   // members User[]
 }
 
 model Project {
-id Int @id @default(autoincrement())
-projectName String
-projectURL String
-organization Organization @relation(fields: [organizationId], references: [id])
-organizationId Int
-// members User[]
-env Envs[]
+  id                           Int          @id @default(autoincrement())
+  projectName                  String
+  projectURL                   String
+  organization                 Organization @relation(fields: [organizationId], references: [id])
+  organizationId               String
+  // members User[]
+  env                          Envs[]
+  organizationOrganizationName String?
 }
 
 // model User {
@@ -42,9 +44,9 @@ env Envs[]
 // }
 
 model Envs {
-  id Int @id @default(autoincrement())
-  envSecretValue String
-  project Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  id              Int     @id @default(autoincrement())
+  envSecretValue  String
+  project         Project @relation(fields: [projectId], references: [id])
+  projectId       Int
   environmentName String
 }
