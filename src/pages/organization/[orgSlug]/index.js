@@ -76,6 +76,8 @@ export default function slug() {
             <CustomTable
               rows={repoData}
               columns={columns}
+              isRowSelectable={false}
+          
               clickRowHandler={handleSelectionModelChange}
             />
           </>

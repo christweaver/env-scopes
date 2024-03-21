@@ -68,6 +68,10 @@ export default function repo() {
         rows={rows}
         columns={columns}
         clickRowHandler={clickHandler}
+        isRowSelectable={false}
+          isPaginationEnabled={false}
+          showRowsPerPage={false}
+          showRowCounter={false}
       />{" "}
       <BasicModal open={open} setOpen={setOpen} />
     </>
