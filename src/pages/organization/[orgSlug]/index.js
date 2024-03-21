@@ -33,7 +33,12 @@ export default function slug() {
 
   //TODO MOVE MEMBERS TO MENU BAR
 
-  const CreateSection = (user) => {
+  const CreateSection = (userType) => {
+
+    const handleButtonClick = () => {
+     
+      router.push(`${router.asPath}/import`);
+    };
 
    
   const userType = user && user.organizationMemberships[0].role
@@ -56,18 +61,13 @@ export default function slug() {
     }, [user]);
 
 
-    const handleButtonClick = () => {
-     
-      router.push(`${router.asPath}/import`);
-    };
-
+  
     if (!isSignedIn || !user) {
       return <div>Loading...</div>; // or any other loading state
     }
     
     return (
       <div>
-       
         {userType === "org:admin" && (
           <>
             {/*  <button onClick={handleViewMembersClick}>View Members</button> */}
