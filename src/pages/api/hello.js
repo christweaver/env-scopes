@@ -15,10 +15,11 @@ export default async function handler(req, res) {
       return;
     }
     const user = await clerkClient.users.getUser(userId);
-    
-    if(user){
+
+    if (user) {
       //This gives us the info about what Oauth accounts they have set up (gitlab, github, etc)
-      const externalAccounts = user.externalAccounts && user.externalAccounts.map(a=> a.provider);
+      const externalAccounts =
+        user.externalAccounts && user.externalAccounts.map((a) => a.provider);
     }
 
     const [clerkResponse] = await clerkClient.users.getUserOauthAccessToken(

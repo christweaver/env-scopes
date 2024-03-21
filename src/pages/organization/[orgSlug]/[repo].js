@@ -20,41 +20,37 @@ const style = {
   p: 4,
 };
 
-function BasicModal({setOpen, open}) {
-
- 
+function BasicModal({ setOpen, open }) {
   const handleClose = () => setOpen(false);
 
   return (
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-      </Modal>
-
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <Typography id="modal-modal-title" variant="h6" component="h2">
+          Text in a modal
+        </Typography>
+        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+          Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+        </Typography>
+      </Box>
+    </Modal>
   );
 }
 
-
 export default function repo() {
-const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-const clickHandler = () => {
-    setOpen(true)
+  const clickHandler = () => {
+    setOpen(true);
   };
-  
+
   const router = useRouter();
-  const repoId = router.query.repo;
+  // const repoId = router.query.repo;
 
   const rows = [
     { id: 1, envName: "Production" },
@@ -73,7 +69,7 @@ const clickHandler = () => {
         columns={columns}
         clickRowHandler={clickHandler}
       />{" "}
-       <BasicModal open={open} setOpen={setOpen} />
+      <BasicModal open={open} setOpen={setOpen} />
     </>
   );
 }

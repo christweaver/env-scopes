@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id               String    @id @default(uuid())
+  organizationName String
+  organizationURL  String
+  projects         Project[]
+ 
+  // members User[]
+}
+
+model Project {
+  id                           Int          @id @default(autoincrement())
+  projectName                  String
+  projectURL                   String
+  organization                 Organization @relation(fields: [organizationId], references: [id])
+  organizationId               String
+  // members User[]
+  env                          Envs[]
+  organizationOrganizationName String?
+}
+
+// model User {
+//   id    Int     @id @default(autoincrement())
+//   name String
+//   email String 
+//   organization Organization @relation(fields: [organizationId], references: [id])
+//   organizationId Int
+//   project Project @relation(fields: [projectId], references: [id])
+//   projectId Int
+// }
+
+model Envs {
+  id              Int     @id @default(autoincrement())
+  envSecretValue  String
+  project         Project @relation(fields: [projectId], references: [id])
+  projectId       Int
+  environmentName String
+}

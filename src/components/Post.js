@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-export default function organization() {
-  const [organizationName, setOrganizationName] = useState("");
-  const [organizationURL, setOrganizationURL] = useState("");
-  let router = useRouter();
+export default function post() {
+  const [projectName, setProjectName] = useState("");
+  const [projectURL, setprojectURL] = useState("");
 
   let handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,9 +11,8 @@ export default function organization() {
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ organizationName, organizationURL }),
+      body: JSON.stringify({ projectName, projectURL }),
     });
-   // router.replace(`organization/${organizationURL}`);
   };
 
   return (
@@ -27,20 +24,20 @@ export default function organization() {
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <input
-            name="organizationName"
-            value={organizationName}
-            onChange={(e) => setOrganizationName(e.target.value)}
+            name="projectName"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
             className="border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring focus:border-blue-500"
             type="text"
-            placeholder="Enter organization Name"
+            placeholder="Enter Project Name"
           ></input>
           <input
-            name="organizationURL"
-            value={organizationURL}
-            onChange={(e) => setOrganizationURL(e.target.value)}
+            name="ProjectURL"
+            value={projectURL}
+            onChange={(e) => setprojectURL(e.target.value)}
             className="border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring focus:border-blue-500"
             type="text"
-            placeholder="Enter organization URL"
+            placeholder="Enter project URL"
           ></input>
 
           <button

@@ -34,26 +34,38 @@ export default function slug() {
   //TODO MOVE MEMBERS TO MENU BAR
 
   const CreateSection = (userType) => {
-    const router = useRouter();
-    useEffect(() => {
-      const getdt = async () => {
-        const gitlabData = await axios("/api/hello");
-
-        const repoFormatted = gitlabData.data.map((x) => {
-          return { id: x.id, projectName: x.name };
-        });
-        console.log(repoFormatted);
-        setRepoData(repoFormatted);
-      };
-      getdt();
-    }, []);
-
 
     const handleButtonClick = () => {
      
       router.push(`${router.asPath}/import`);
     };
 
+   
+  const userType = user && user.organizationMemberships[0].role
+
+  const userId = user && user.id
+  console.log(userId)
+    const router = useRouter();
+    useEffect(() => {
+      const getdt = async () => {
+        //TODO FILTER BY ORGANIZATION
+        const gitlabData = await axios(`/api/project?userId=${userId}`);
+
+        const repoFormatted = gitlabData.data.map((x) => {
+          return { id: x.id, projectName: x.projectName };
+        });
+        console.log(repoFormatted);
+        setRepoData(repoFormatted);
+      };
+      user&& getdt();
+    }, [user]);
+
+
+  
+    if (!isSignedIn || !user) {
+      return <div>Loading...</div>; // or any other loading state
+    }
+    
     return (
       <div>
         {userType === "org:admin" && (
@@ -77,6 +89,5 @@ export default function slug() {
     );
   };
 
-  return CreateSection(isSignedIn && user.organizationMemberships[0].role);
-
+  return CreateSection(isSignedIn && user);
 }
