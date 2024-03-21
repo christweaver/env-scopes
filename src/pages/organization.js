@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 export default function organization() {
   const [organizationName, setOrganizationName] = useState("");
   const [organizationURL, setOrganizationURL] = useState("");
   let router = useRouter();
-
+  const { isSignedIn, user } = useUser();
   let handleSubmit = async (e) => {
+    
     e.preventDefault();
     // Send a POST request to new API endpoint
-    const res = await fetch("/api/post", {
+    const res = await fetch("/api/organization", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ organizationName, organizationURL }),
+      body: JSON.stringify({ organizationName, organizationURL, userId: user.id}),
     });
    // router.replace(`organization/${organizationURL}`);
   };
@@ -22,7 +24,7 @@ export default function organization() {
     <div className="w-full min-h-screen blur-second bg-no-repeat bg-fixed bg-top bg-cover">
       <div className="bg-dimWhite rounded-xl shadow-2xl p-6 max-w-[400px] mx-auto mt-10">
         <h1 className="text-2xl font-poppins font-semibold mb-3 text-black">
-          Add new Project
+          Add new organization
         </h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
@@ -47,7 +49,7 @@ export default function organization() {
             type="submit"
             className="bg-blue-700 text-white py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300 self-center"
           >
-            Add to db
+            Submit
           </button>
         </form>
       </div>

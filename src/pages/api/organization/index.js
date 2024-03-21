@@ -12,14 +12,22 @@ export default async function organization(req, res) {
         const item = await prisma.organization.create({
           data: { organizationName, organizationURL },
         });
+        console.log({item})
 
      
-        //TODO ADD ARRAY OF ORGANIZATION INSTEAD OF OBJECT
+        const user = await clerkClient.users.getUser(userId);
+        const publicMd = user.publicMetadata?.organizations ? user.publicMetadata.organizations : [];
+        const privateMd = user.privateMetadata?.organizations ? user.privateMetadata.organizations : [];
+
+        // Add new organization
+        publicMd.push(organizationName);
+        privateMd.push(item.id);
+
+        // Update user metadata with the new organization arrays
         await clerkClient.users.updateUserMetadata(userId, {
-            privateMetadata: {
-              organization: item.id
-            }
-          })
+          privateMetadata: { organizations: privateMd },
+          publicMetadata: { organizations: publicMd },
+        });
        
         return res.status(200).json(item);
       } catch (error) {

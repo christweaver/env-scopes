@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,20 +7,49 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { UserButton } from "@clerk/nextjs";
-import { OrganizationSwitcher } from "@clerk/nextjs";
-
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from 'next/router';
+import CustomModal from "./CustomModal";
+import AddOrganizationForm from "./AddOrganizationForm";
 const pages = ["Repos", "Members"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const router = useRouter();
+  const { isSignedIn, user } = useUser();
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [organizations, setOrganizations] = useState([]);
+  const [selectedOrganization, setSelectedOrganization] = useState('');
+  const [showNewModal, setShowNewModal] = useState(false);
+
+  useEffect(()=>{
+    if(!user)return;
+    if(!user.publicMetadata?.organizations){
+      setShowNewModal(true);
+      return;
+    }
+
+    setOrganizations(user.publicMetadata.organizations)
+    setSelectedOrganization(user.publicMetadata.organizations[0])
+  },[user])
+
+  const handleChange = (event) => {
+    const selectedOrganization = event.target.value;
+    if(selectedOrganization == "new"){
+      setShowNewModal(true);
+      return;
+    }
+    setSelectedOrganization(selectedOrganization);
+    router.push(`/organization/${selectedOrganization}`);
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -36,8 +65,21 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const handleModalClose = () => {
+    setShowNewModal(false);
+  };
 
   return (
+    <>{showNewModal && <CustomModal
+      open={showNewModal}
+      onClose={handleModalClose}
+      title=""
+      size="large"
+      darkBackground
+      disableBackdropClick
+    >
+      <AddOrganizationForm />
+    </CustomModal>}
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -116,11 +158,21 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <OrganizationSwitcher
-              afterSelectOrganizationUrl={(org) => `/organization/${org.slug}`}
-              hidePersonal="true"
-              appearance
-            />
+            <FormControl  sx={{ m: 1, minWidth: 150 }}>
+             
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedOrganization}
+                label="Age"
+                onChange={handleChange}
+              >
+              {  organizations.map((org)=>{
+                  return <MenuItem key={org} value={org}>{org}</MenuItem>;
+              })}
+                <MenuItem value={"new"}>Add New</MenuItem>
+              </Select>
+            </FormControl>
             {pages.map((page) => (
               <Button
                 key={page}
@@ -159,7 +211,7 @@ function ResponsiveAppBar() {
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>
+    </AppBar></>
   );
 }
 export default ResponsiveAppBar;
