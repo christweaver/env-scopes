@@ -1,28 +1,40 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/clerk-react";
+
 export default function organization() {
   const [organizationName, setOrganizationName] = useState("");
   const [organizationURL, setOrganizationURL] = useState("");
   let router = useRouter();
+  const { isSignedIn, user, isLoaded } = useUser();
 
+  if (!isLoaded) {
+    // Handle loading state however you like
+    return null;
+  }
+  let userId;
   let handleSubmit = async (e) => {
     e.preventDefault();
     // Send a POST request to new API endpoint
-    const res = await fetch("/api/post", {
+    if (isSignedIn) {
+      userId = user.id;
+      console.log(userId);
+    }
+    const res = await fetch("/api/organization", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ organizationName, organizationURL }),
+      body: JSON.stringify({ organizationName, organizationURL, userId }),
     });
-   // router.replace(`organization/${organizationURL}`);
+    router.replace(`organization/${organizationURL}`);
   };
 
   return (
     <div className="w-full min-h-screen blur-second bg-no-repeat bg-fixed bg-top bg-cover">
       <div className="bg-dimWhite rounded-xl shadow-2xl p-6 max-w-[400px] mx-auto mt-10">
         <h1 className="text-2xl font-poppins font-semibold mb-3 text-black">
-          Add new Project
+          Add new organization
         </h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
