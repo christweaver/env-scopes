@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { useUser } from "@clerk/nextjs";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import CustomTable from "@/components/CustomTable";
-import { Typography, Button, } from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import axios from "axios";
 export default function slug() {
   const rows = [
@@ -26,6 +26,7 @@ export default function slug() {
 
   const [showMembers, setShowMembers] = useState(false);
   const [repoData, setRepoData] = useState(false);
+  const [orgID, setOrgID] = useState("");
 
   const handleSelectionModelChange = (newSelectionModel) => {
     location.href += `/${newSelectionModel.id}`;
@@ -34,40 +35,37 @@ export default function slug() {
   //TODO MOVE MEMBERS TO MENU BAR
 
   const CreateSection = (user) => {
+    const userType = user && user.organizationMemberships[0].role;
 
-   
-  const userType = user && user.organizationMemberships[0].role
-
-  const userId = user && user.id
-  console.log(userId)
+    const userId = user && user.id;
+    console.log(user);
     const router = useRouter();
     useEffect(() => {
       const getdt = async () => {
         //TODO FILTER BY ORGANIZATION
-        const gitlabData = await axios(`/api/project?userId=${userId}`);
 
+        const gitlabData = await axios(`/api/project?userId=${userId}`);
+        console.log(gitlabData);
         const repoFormatted = gitlabData.data.map((x) => {
           return { id: x.id, projectName: x.projectName };
         });
         console.log(repoFormatted);
         setRepoData(repoFormatted);
+        setOrgID(gitlabData.data[0].organizationId);
       };
-      user&& getdt();
+      user && getdt();
     }, [user]);
 
-
     const handleButtonClick = () => {
-     
-      router.push(`${router.asPath}/import`);
+      router.push(`${orgID}/import`);
     };
 
     if (!isSignedIn || !user) {
       return <div>Loading...</div>; // or any other loading state
     }
-    
+    console.log(orgID);
     return (
       <div>
-       
         {userType === "org:admin" && (
           <>
             {/*  <button onClick={handleViewMembersClick}>View Members</button> */}
@@ -77,16 +75,18 @@ export default function slug() {
               rows={repoData}
               columns={columns}
               isRowSelectable={false}
-          
               clickRowHandler={handleSelectionModelChange}
             />
           </>
         )}
-        
-          <Button variant="contained" onClick={handleButtonClick}>
-            Import Projects
-          </Button>
-        
+
+        <Button
+          variant="contained"
+          className="bg-blue-500"
+          onClick={handleButtonClick}
+        >
+          Import Projects
+        </Button>
       </div>
     );
   };

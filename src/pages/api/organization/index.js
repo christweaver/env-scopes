@@ -9,27 +9,25 @@ export default async function organization(req, res) {
       try {
         //TODO HANDLE UNIQUE CONSTRAINT HERE organizationName should be unique
         const { organizationName, organizationURL, userId } = req.body;
+        console.log(userId);
         const item = await prisma.organization.create({
           data: { organizationName, organizationURL },
         });
+        console.log(userId);
 
-     
-        //TODO ADD ARRAY OF ORGANIZATION INSTEAD OF OBJECT
+        // TODO ADD ARRAY OF ORGANIZATION INSTEAD OF OBJECT
         await clerkClient.users.updateUserMetadata(userId, {
-            privateMetadata: {
-              organization: item.id
-            }
-          })
-       
+          privateMetadata: {
+            organization: item.id,
+          },
+        });
+
         return res.status(200).json(item);
       } catch (error) {
-        console.error(error)
+        console.error(error);
         throw error;
       }
     case "GET":
-      
       break;
   }
 }
-
-
