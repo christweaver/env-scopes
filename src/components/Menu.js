@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import CustomModal from "./CustomModal";
 import AddOrganizationForm from "./AddOrganizationForm";
 import { useOrganization } from "@/contexts/OrganizationContext";
+import convertToSlug from "@/utils/convertToSlug";
 const pages = ["Repos", "Members"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -65,7 +66,9 @@ function ResponsiveAppBar() {
     );
 
     // Navigate to the selected organization's URL
-    router.push(`/organization/${selectedOrganization.organizationName}`);
+    router.push(
+      `/organization/${convertToSlug(selectedOrganization.organizationName)}`
+    );
   };
 
   const handleOpenNavMenu = (event) => {

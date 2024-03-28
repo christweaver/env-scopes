@@ -5,6 +5,9 @@ import CustomTable from "@/components/CustomTable";
 import { Typography, Button } from "@mui/material";
 import axios from "axios";
 import { useOrganization } from "@/contexts/OrganizationContext";
+import CustomModal from "@/components/CustomModal";
+import AddProjectForm from "@/components/AddProjectForm";
+import convertToSlug from "@/utils/convertToSlug";
 export default function slug() {
   const rows = [
     { id: 1, projectName: "AuthSystem" },
@@ -27,15 +30,14 @@ export default function slug() {
 
   const [showMembers, setShowMembers] = useState(false);
   const [repoData, setRepoData] = useState(false);
-<<<<<<< HEAD:src/pages/organization/[orgSlug]/index.js
   const { selectedOrganization, setSelectedOrganizationData } =
     useOrganization();
-=======
-  const [orgID, setOrgID] = useState("");
->>>>>>> origin:src/pages/organization/[orgID]/index.js
+  const [showAddProjectModel, setShowAddProjectModel] = useState(false);
 
   const handleSelectionModelChange = (newSelectionModel) => {
-    location.href += `/${newSelectionModel.id}`;
+    console.log({ newSelectionModel });
+
+    location.href += `/${convertToSlug(newSelectionModel.row.projectName)}`;
   };
 
   //TODO MOVE MEMBERS TO MENU BAR
@@ -44,17 +46,10 @@ export default function slug() {
     const userType = user && user.organizationMemberships[0].role;
 
     const userId = user && user.id;
-<<<<<<< HEAD:src/pages/organization/[orgSlug]/index.js
-    console.log(userId);
-=======
-    console.log(user);
->>>>>>> origin:src/pages/organization/[orgID]/index.js
+
     const router = useRouter();
     useEffect(() => {
       const getdt = async () => {
-        //TODO FILTER BY ORGANIZATION
-<<<<<<< HEAD:src/pages/organization/[orgSlug]/index.js
-        console.log(selectedOrganization);
         const projectData =
           selectedOrganization.id &&
           (await axios(
@@ -68,68 +63,64 @@ export default function slug() {
           projectsArr.map((x) => {
             return { id: x.id, projectName: x.projectName };
           });
-=======
-
-        const gitlabData = await axios(`/api/project?userId=${userId}`);
-        console.log(gitlabData);
-        const repoFormatted = gitlabData.data.map((x) => {
-          return { id: x.id, projectName: x.projectName };
-        });
->>>>>>> origin:src/pages/organization/[orgID]/index.js
         console.log(repoFormatted);
         setRepoData(repoFormatted);
-        setOrgID(gitlabData.data[0].organizationId);
       };
       user && getdt();
-<<<<<<< HEAD:src/pages/organization/[orgSlug]/index.js
     }, [user, selectedOrganization]);
 
     const handleButtonClick = () => {
       router.push(`${router.asPath}/import`);
-=======
-    }, [user]);
+    };
 
-    const handleButtonClick = () => {
-      router.push(`${orgID}/import`);
->>>>>>> origin:src/pages/organization/[orgID]/index.js
+    const handleAddNewProject = () => {
+      setShowAddProjectModel(true);
     };
 
     if (!isSignedIn || !user) {
-      return <div>Loading...</div>; // or any other loading state
+      return <div>Loading...</div>;
     }
-<<<<<<< HEAD:src/pages/organization/[orgSlug]/index.js
-
-=======
-    console.log(orgID);
->>>>>>> origin:src/pages/organization/[orgID]/index.js
     return (
-      <div>
-        {userType === "org:admin" && (
-          <>
-            {/*  <button onClick={handleViewMembersClick}>View Members</button> */}
-
-            <Typography variant="h3">Repositories</Typography>
-            <CustomTable
-              rows={repoData}
-              columns={columns}
-              isRowSelectable={false}
-              clickRowHandler={handleSelectionModelChange}
-            />
-          </>
+      <>
+        {/*  <button onClick={handleViewMembersClick}>View Members</button> */}
+        {showAddProjectModel && (
+          <CustomModal
+            open={showAddProjectModel}
+            onClose={() => {
+              setShowAddProjectModel(false);
+            }}
+            title=""
+            size="large"
+            darkBackground
+            disableBackdropClick
+          >
+            <AddProjectForm />
+          </CustomModal>
         )}
+        <Typography variant="h3">Repositories</Typography>
+        <CustomTable
+          rows={repoData}
+          columns={columns}
+          isRowSelectable={false}
+          clickRowHandler={handleSelectionModelChange}
+        />
 
-<<<<<<< HEAD:src/pages/organization/[orgSlug]/index.js
-        <Button variant="contained" onClick={handleButtonClick}>
-=======
         <Button
+          variant="contained"
+          className="bg-blue-500"
+          onClick={handleAddNewProject}
+        >
+          Add New Project
+        </Button>
+        <Button
+          sx={{ "margin-left": 2 }}
           variant="contained"
           className="bg-blue-500"
           onClick={handleButtonClick}
         >
->>>>>>> origin:src/pages/organization/[orgID]/index.js
           Import Projects
         </Button>
-      </div>
+      </>
     );
   };
 

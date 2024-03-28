@@ -16,8 +16,8 @@ datasource db {
 model Organization {
   id               String    @id @default(uuid())
   organizationName String
-  organizationURL  String
   projects         Project[]
+  organizationSlug String    @unique
  
   // members User[]
 }
@@ -25,7 +25,7 @@ model Organization {
 model Project {
   id                           Int          @id @default(autoincrement())
   projectName                  String
-  projectURL                   String
+  projectURL                   String?
   organization                 Organization @relation(fields: [organizationId], references: [id])
   organizationId               String
   // members User[]
