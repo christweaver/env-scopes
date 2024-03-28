@@ -17,7 +17,9 @@ export default function organization() {
       },
       body: JSON.stringify({ organizationName, organizationURL, userId: user.id}),
     });
-   // router.replace(`organization/${organizationURL}`);
+    console.log(organizationURL);
+
+    router.replace("newProject");
   };
 
   return (

@@ -11,7 +11,7 @@ export default async function project(req, res) {
         const item = await prisma.project.create({
           data: { projectName, projectURL, organizationId },
         });
-
+        console.log(item);
         return res.status(200).json(item);
       } catch (error) {
         throw error;

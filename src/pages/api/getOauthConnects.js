@@ -3,9 +3,8 @@ import { clerkClient } from "@clerk/nextjs";
 
 export default async function handler(req, res) {
   try {
-    
     const { userId } = getAuth(req);
-
+    console.log(userId);
     if (!userId) {
       res.status(401).json({ error: "Unauthorized" });
       return;
