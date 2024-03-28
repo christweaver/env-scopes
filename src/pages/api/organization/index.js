@@ -12,32 +12,31 @@ export default async function organization(req, res) {
         const item = await prisma.organization.create({
           data: { organizationName, organizationURL },
         });
-        console.log({item})
 
-     
         const user = await clerkClient.users.getUser(userId);
-        const publicMd = user.publicMetadata?.organizations ? user.publicMetadata.organizations : [];
-        const privateMd = user.privateMetadata?.organizations ? user.privateMetadata.organizations : [];
+        const publicMd = user.publicMetadata?.organizations
+          ? user.publicMetadata.organizations
+          : [];
+        const privateMd = user.privateMetadata?.organizations
+          ? user.privateMetadata.organizations
+          : [];
 
         // Add new organization
-        publicMd.push(organizationName);
-        privateMd.push(item.id);
+        publicMd.push({ organizationName, orgId: item.id });
+        privateMd.push({ organizationName, orgId: item.id });
 
         // Update user metadata with the new organization arrays
         await clerkClient.users.updateUserMetadata(userId, {
           privateMetadata: { organizations: privateMd },
           publicMetadata: { organizations: publicMd },
         });
-       
+
         return res.status(200).json(item);
       } catch (error) {
-        console.error(error)
+        console.error(error);
         throw error;
       }
     case "GET":
-      
       break;
   }
 }
-
-
