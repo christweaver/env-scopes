@@ -19,6 +19,7 @@ export default function organization() {
     if (isSignedIn) {
       userId = user.id;
       console.log(userId);
+      console.log(user);
     }
     const res = await fetch("/api/organization", {
       method: "POST",
@@ -27,7 +28,9 @@ export default function organization() {
       },
       body: JSON.stringify({ organizationName, organizationURL, userId }),
     });
-    router.replace(`organization/${organizationURL}`);
+    console.log(organizationURL);
+
+    router.replace("newProject");
   };
 
   return (

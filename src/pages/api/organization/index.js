@@ -13,14 +13,15 @@ export default async function organization(req, res) {
         const item = await prisma.organization.create({
           data: { organizationName, organizationURL },
         });
-        console.log(userId);
+        console.log(item);
 
         // TODO ADD ARRAY OF ORGANIZATION INSTEAD OF OBJECT
         await clerkClient.users.updateUserMetadata(userId, {
-          privateMetadata: {
+          publicMetadata: {
             organization: item.id,
           },
         });
+        console.log(item);
 
         return res.status(200).json(item);
       } catch (error) {
