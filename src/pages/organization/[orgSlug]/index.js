@@ -46,15 +46,19 @@ export default function slug() {
       const getdt = async () => {
         //TODO FILTER BY ORGANIZATION
         console.log(selectedOrganization);
-        const gitlabData =
+        const projectData =
           selectedOrganization.id &&
           (await axios(
             `/api/project?userId=${userId}&org=${selectedOrganization.id}`
           ));
 
-        const repoFormatted = gitlabData.data.map((x) => {
-          return { id: x.id, projectName: x.projectName };
-        });
+        const projectsArr = projectData?.data || [];
+
+        const repoFormatted =
+          projectsArr.length &&
+          projectsArr.map((x) => {
+            return { id: x.id, projectName: x.projectName };
+          });
         console.log(repoFormatted);
         setRepoData(repoFormatted);
       };

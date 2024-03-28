@@ -25,7 +25,7 @@ export default async function project(req, res) {
         (x) => x.orgId === org
       );
       console.log(org);
-      if (!found) return res.status(400).send("not connected to org");
+      if (!found) return res.status(200).json([]);
       const projects = await prisma.project.findMany({
         where: {
           organizationId: org,
