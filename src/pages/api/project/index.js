@@ -17,15 +17,21 @@ export default async function project(req, res) {
         throw error;
       }
     case "GET":
-      const { userId } = await req.query;
-      console.log({ userId });
+      const { userId, org } = await req.query;
+      console.log({ userId, org });
       const user = await clerkClient.users.getUser(userId);
-      console.log({ user });
+
+      const found = user.privateMetadata.organizations.find(
+        (x) => x.orgId === org
+      );
+      console.log(org);
+      if (!found) return res.status(200).json([]);
       const projects = await prisma.project.findMany({
         where: {
-          organizationId: user.publicMetadata.organization,
+          organizationId: org,
         },
       });
+
       console.log("projects", projects);
       return res.status(200).json(projects);
       break;

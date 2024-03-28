@@ -1,32 +1,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/clerk-react";
-
+import { useUser } from "@clerk/nextjs";
 export default function organization() {
   const [organizationName, setOrganizationName] = useState("");
   const [organizationURL, setOrganizationURL] = useState("");
   let router = useRouter();
-  const { isSignedIn, user, isLoaded } = useUser();
-
-  if (!isLoaded) {
-    // Handle loading state however you like
-    return null;
-  }
-  let userId;
+  const { isSignedIn, user } = useUser();
   let handleSubmit = async (e) => {
+    
     e.preventDefault();
     // Send a POST request to new API endpoint
-    if (isSignedIn) {
-      userId = user.id;
-      console.log(userId);
-      console.log(user);
-    }
     const res = await fetch("/api/organization", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ organizationName, organizationURL, userId }),
+      body: JSON.stringify({ organizationName, organizationURL, userId: user.id}),
     });
     console.log(organizationURL);
 
@@ -62,7 +51,7 @@ export default function organization() {
             type="submit"
             className="bg-blue-700 text-white py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300 self-center"
           >
-            Add to db
+            Submit
           </button>
         </form>
       </div>
