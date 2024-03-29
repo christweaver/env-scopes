@@ -21,9 +21,10 @@ export default async function project(req, res) {
       console.log({ userId, org });
       const user = await clerkClient.users.getUser(userId);
 
-      const found = user.privateMetadata.organizations.find(
-        (x) => x.orgId === org
-      );
+      const userOrganizations = user.privateMetadata.organizations;
+      const found =
+        userOrganizations?.length &&
+        userOrganizations.find((x) => x.orgId === org);
       console.log(org);
       if (!found) return res.status(200).json([]);
       const projects = await prisma.project.findMany({

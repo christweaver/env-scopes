@@ -7,13 +7,11 @@ export default async function organization(req, res) {
   switch (req.method) {
     case "POST":
       try {
-        //TODO HANDLE UNIQUE CONSTRAINT HERE organizationName should be unique
-        const { organizationName, organizationURL, userId } = req.body;
+        const { organizationName, organizationSlug, userId } = req.body;
         console.log(userId);
         const item = await prisma.organization.create({
-          data: { organizationName, organizationURL },
+          data: { organizationName, organizationSlug },
         });
-        console.log(item);
 
         const user = await clerkClient.users.getUser(userId);
         const publicMd = user.publicMetadata?.organizations
